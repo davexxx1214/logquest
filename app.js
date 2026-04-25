@@ -286,30 +286,30 @@ const slotNames = {
 };
 
 const itemCatalog = {
-  "粗糙短剑": { slot: "weapon", stats: ["atk"], icon: "SW" },
-  "兽皮护腕": { slot: "armor", stats: ["def", "hp"], icon: "GL" },
-  "旅人斗篷": { slot: "armor", stats: ["spd", "def"], icon: "CP" },
-  "蜂刺戒指": { slot: "trinket", stats: ["crit", "spd"], icon: "RG" },
-  "矿工斧": { slot: "weapon", stats: ["atk", "crit"], icon: "AX" },
-  "铁鳞甲": { slot: "armor", stats: ["def", "hp"], icon: "AR" },
-  "硬壳盾": { slot: "armor", stats: ["def"], icon: "SH" },
-  "幽暗灯芯": { slot: "trinket", stats: ["mag", "crit"], icon: "LT" },
-  "裂纹圣印": { slot: "trinket", stats: ["mag", "def"], icon: "SG" },
-  "潮汐法杖": { slot: "weapon", stats: ["mag"], icon: "ST" },
-  "骨片护符": { slot: "trinket", stats: ["hp", "mag"], icon: "CH" },
-  "石像肩甲": { slot: "armor", stats: ["def", "hp"], icon: "PA" },
-  "荆棘短矛": { slot: "weapon", stats: ["atk", "mag"], icon: "SP" },
-  "苔纹披肩": { slot: "armor", stats: ["def", "mag"], icon: "MC" },
-  "月露护符": { slot: "trinket", stats: ["hp", "mag"], icon: "MD" },
-  "古木指环": { slot: "trinket", stats: ["def", "crit"], icon: "OR" },
-  "星屑魔杖": { slot: "weapon", stats: ["mag", "crit"], icon: "MW" },
-  "抄写员长袍": { slot: "armor", stats: ["mag", "def"], icon: "SR" },
-  "棱镜戒指": { slot: "trinket", stats: ["mag", "spd"], icon: "PR" },
-  "符文书签": { slot: "trinket", stats: ["crit", "mag"], icon: "RB" },
-  "边军长剑": { slot: "weapon", stats: ["atk", "def"], icon: "LS" },
-  "壁垒胸甲": { slot: "armor", stats: ["hp", "def"], icon: "BA" },
-  "军旗护符": { slot: "trinket", stats: ["hp", "atk"], icon: "BF" },
-  "校尉戒指": { slot: "trinket", stats: ["atk", "crit"], icon: "CR" }
+  "粗糙短剑": { slot: "weapon", stats: ["atk"], icon: "SW", spriteIndex: 0 },
+  "兽皮护腕": { slot: "armor", stats: ["def", "hp"], icon: "GL", spriteIndex: 1 },
+  "旅人斗篷": { slot: "armor", stats: ["spd", "def"], icon: "CP", spriteIndex: 2 },
+  "蜂刺戒指": { slot: "trinket", stats: ["crit", "spd"], icon: "RG", spriteIndex: 3 },
+  "矿工斧": { slot: "weapon", stats: ["atk", "crit"], icon: "AX", spriteIndex: 4 },
+  "铁鳞甲": { slot: "armor", stats: ["def", "hp"], icon: "AR", spriteIndex: 5 },
+  "硬壳盾": { slot: "armor", stats: ["def"], icon: "SH", spriteIndex: 6 },
+  "幽暗灯芯": { slot: "trinket", stats: ["mag", "crit"], icon: "LT", spriteIndex: 7 },
+  "裂纹圣印": { slot: "trinket", stats: ["mag", "def"], icon: "SG", spriteIndex: 8 },
+  "潮汐法杖": { slot: "weapon", stats: ["mag"], icon: "ST", spriteIndex: 9 },
+  "骨片护符": { slot: "trinket", stats: ["hp", "mag"], icon: "CH", spriteIndex: 10 },
+  "石像肩甲": { slot: "armor", stats: ["def", "hp"], icon: "PA", spriteIndex: 11 },
+  "荆棘短矛": { slot: "weapon", stats: ["atk", "mag"], icon: "SP", spriteIndex: 12 },
+  "苔纹披肩": { slot: "armor", stats: ["def", "mag"], icon: "MC", spriteIndex: 13 },
+  "月露护符": { slot: "trinket", stats: ["hp", "mag"], icon: "MD", spriteIndex: 14 },
+  "古木指环": { slot: "trinket", stats: ["def", "crit"], icon: "OR", spriteIndex: 15 },
+  "星屑魔杖": { slot: "weapon", stats: ["mag", "crit"], icon: "MW", spriteIndex: 16 },
+  "抄写员长袍": { slot: "armor", stats: ["mag", "def"], icon: "SR", spriteIndex: 17 },
+  "棱镜戒指": { slot: "trinket", stats: ["mag", "spd"], icon: "PR", spriteIndex: 18 },
+  "符文书签": { slot: "trinket", stats: ["crit", "mag"], icon: "RB", spriteIndex: 19 },
+  "边军长剑": { slot: "weapon", stats: ["atk", "def"], icon: "LS", spriteIndex: 20 },
+  "壁垒胸甲": { slot: "armor", stats: ["hp", "def"], icon: "BA", spriteIndex: 21 },
+  "军旗护符": { slot: "trinket", stats: ["hp", "atk"], icon: "BF", spriteIndex: 22 },
+  "校尉戒指": { slot: "trinket", stats: ["atk", "crit"], icon: "CR", spriteIndex: 23 }
 };
 
 const affixPool = [
@@ -683,7 +683,7 @@ function renderHeroes() {
     button.style.setProperty("--sprite-a", data.colorA);
     button.style.setProperty("--sprite-b", data.colorB);
     button.innerHTML = `
-      <span class="hero-portrait">${data.mark}</span>
+      <span class="hero-portrait art-sprite" style="${spriteSheetStyle("assets/heroes-16bit.png", data.spriteIndex, 6, 4)}" aria-hidden="true"></span>
       <span>
         <strong>${data.name} Lv.${hero.level}</strong>
         <span class="small-line">${hero.unlocked ? `${data.role} · XP ${hero.xp}/${nextXp} · 装等 ${gearPower}` : `未解锁 · 来源: ${data.unlock}`}</span>
@@ -714,7 +714,7 @@ function renderMonsters() {
     row.style.setProperty("--sprite-a", monster.colorA);
     row.style.setProperty("--sprite-b", monster.colorB);
     row.innerHTML = `
-      <span class="monster-sprite">${monster.mark}</span>
+      <span class="monster-sprite art-sprite" style="${spriteSheetStyle("assets/monsters-16bit.png", monster.spriteIndex, 6, 4)}" aria-hidden="true"></span>
       <span>
         <strong>${monster.name}</strong>
         <span class="small-line">${monster.family} · HP ${stats.hp} · ATK ${stats.atk} · DEF ${stats.def}</span>
@@ -788,7 +788,7 @@ function renderLoot() {
 function renderItemRow(item, label) {
   return `
     <div class="item-row">
-      <span class="item-icon">${item.icon || "??"}</span>
+      <span class="item-icon art-sprite" style="${spriteSheetStyle("assets/items-16bit.png", item.spriteIndex || 0, 8, 3)}" aria-hidden="true"></span>
       <span>
         <strong class="${item.className || ""}">${item.rarity || "普通"} ${item.name}</strong>
         <span class="small-line">${label} · ${slotNames[item.slot] || "装备"} · ${formatStats(item.stats)}</span>
@@ -1071,7 +1071,8 @@ function createEquipmentItem(baseName, pickedRarity, floor) {
     rarity: pickedRarity.name,
     className: pickedRarity.className,
     stats,
-    affixes
+    affixes,
+    spriteIndex: base.spriteIndex
   };
 }
 
@@ -1091,6 +1092,14 @@ function formatStats(stats) {
   return Object.entries(stats || {})
     .map(([stat, value]) => `${labels[stat] || stat}+${value}`)
     .join(" ");
+}
+
+function spriteSheetStyle(url, index, columns, rows) {
+  const col = index % columns;
+  const row = Math.floor(index / columns);
+  const x = columns === 1 ? 0 : (col / (columns - 1)) * 100;
+  const y = rows === 1 ? 0 : (row / (rows - 1)) * 100;
+  return `background-image:url('${url}');background-size:${columns * 100}% ${rows * 100}%;background-position:${x}% ${y}%;`;
 }
 
 function scoreItem(item) {
