@@ -1,0 +1,276 @@
+{
+  "classData": {
+	"warrior": {
+	  "name": "战士",
+	  "mark": "W",
+	  "spriteIndex": 0,
+	  "unlock": "初始",
+	  "role": "稳定前排 / 斩击",
+	  "colorA": "#a94838",
+	  "colorB": "#5c2723",
+	  "base": {
+		"hp": 132,
+		"atk": 18,
+		"mag": 2,
+		"def": 12,
+		"spd": 8,
+		"crit": 6
+	  },
+	  "growth": {
+		"hp": 18,
+		"atk": 4,
+		"mag": 1,
+		"def": 3,
+		"spd": 1,
+		"crit": 1
+	  }
+	},
+	"mage": {
+	  "name": "法师",
+	  "mark": "M",
+	  "spriteIndex": 1,
+	  "unlock": "沉没神殿",
+	  "role": "奥术爆发 / 群体伤害",
+	  "colorA": "#584fb1",
+	  "colorB": "#251c62",
+	  "base": {
+		"hp": 78,
+		"atk": 6,
+		"mag": 27,
+		"def": 5,
+		"spd": 11,
+		"crit": 8
+	  },
+	  "growth": {
+		"hp": 10,
+		"atk": 1,
+		"mag": 6,
+		"def": 1,
+		"spd": 2,
+		"crit": 1
+	  }
+	},
+	"monk": {
+	  "name": "僧侣",
+	  "mark": "C",
+	  "spriteIndex": 2,
+	  "unlock": "初始",
+	  "role": "治疗 / 圣光惩戒",
+	  "colorA": "#d8c36a",
+	  "colorB": "#8a6a2c",
+	  "base": {
+		"hp": 96,
+		"atk": 9,
+		"mag": 19,
+		"def": 8,
+		"spd": 9,
+		"crit": 5
+	  },
+	  "growth": {
+		"hp": 13,
+		"atk": 2,
+		"mag": 4,
+		"def": 2,
+		"spd": 1,
+		"crit": 1
+	  }
+	},
+	"hunter": {
+	  "name": "猎人",
+	  "mark": "H",
+	  "spriteIndex": 3,
+	  "unlock": "晨曦草原",
+	  "role": "先手 / 暴击 / 点杀",
+	  "colorA": "#4ca36c",
+	  "colorB": "#214a2b",
+	  "base": {
+		"hp": 92,
+		"atk": 21,
+		"mag": 4,
+		"def": 6,
+		"spd": 17,
+		"crit": 18
+	  },
+	  "growth": {
+		"hp": 12,
+		"atk": 5,
+		"mag": 1,
+		"def": 1,
+		"spd": 3,
+		"crit": 2
+	  }
+	},
+	"knight": {
+	  "name": "骑士",
+	  "mark": "K",
+	  "spriteIndex": 4,
+	  "unlock": "旧矿山",
+	  "role": "护卫 / 减伤 / 反击",
+	  "colorA": "#4e9bcb",
+	  "colorB": "#24445d",
+	  "base": {
+		"hp": 146,
+		"atk": 15,
+		"mag": 3,
+		"def": 16,
+		"spd": 6,
+		"crit": 4
+	  },
+	  "growth": {
+		"hp": 20,
+		"atk": 3,
+		"mag": 1,
+		"def": 4,
+		"spd": 1,
+		"crit": 1
+	  }
+	},
+	"druid": {
+	  "name": "德鲁伊",
+	  "mark": "D",
+	  "spriteIndex": 5,
+	  "unlock": "黑森林",
+	  "role": "持续恢复 / 毒藤 / 自然之力",
+	  "colorA": "#6eb65f",
+	  "colorB": "#46672b",
+	  "base": {
+		"hp": 106,
+		"atk": 11,
+		"mag": 17,
+		"def": 9,
+		"spd": 10,
+		"crit": 7
+	  },
+	  "growth": {
+		"hp": 15,
+		"atk": 2,
+		"mag": 4,
+		"def": 2,
+		"spd": 2,
+		"crit": 1
+	  }
+	}
+  },
+  "classSkills": {
+	"warrior": [
+	  {
+		"id": "guarded_stance",
+		"level": 1,
+		"name": "坚守架势",
+		"text": "受到伤害降低 8%"
+	  },
+	  {
+		"id": "sweeping_strike",
+		"level": 3,
+		"name": "横扫斩",
+		"text": "每 4 轮强化斩击"
+	  },
+	  {
+		"id": "battle_trance",
+		"level": 6,
+		"name": "战意",
+		"text": "半血后攻击提升"
+	  }
+	],
+	"mage": [
+	  {
+		"id": "arcane_focus",
+		"level": 1,
+		"name": "奥术专注",
+		"text": "魔法伤害更稳定"
+	  },
+	  {
+		"id": "ember_rain",
+		"level": 3,
+		"name": "火星雨",
+		"text": "每 3 轮群体攻击"
+	  },
+	  {
+		"id": "mana_surge",
+		"level": 6,
+		"name": "魔涌",
+		"text": "暴击后追加法术力"
+	  }
+	],
+	"monk": [
+	  {
+		"id": "minor_heal",
+		"level": 1,
+		"name": "小治疗术",
+		"text": "周期治疗最低生命队友"
+	  },
+	  {
+		"id": "ward_prayer",
+		"level": 3,
+		"name": "护佑祷言",
+		"text": "治疗时附加护盾"
+	  },
+	  {
+		"id": "turn_undead",
+		"level": 6,
+		"name": "驱邪",
+		"text": "对亡灵额外伤害"
+	  }
+	],
+	"hunter": [
+	  {
+		"id": "opening_shot",
+		"level": 1,
+		"name": "先制射击",
+		"text": "第 1 轮必定强化攻击"
+	  },
+	  {
+		"id": "marked_prey",
+		"level": 3,
+		"name": "猎物标记",
+		"text": "暴击伤害提升"
+	  },
+	  {
+		"id": "rapid_fire",
+		"level": 6,
+		"name": "连射",
+		"text": "有概率追加一击"
+	  }
+	],
+	"knight": [
+	  {
+		"id": "bodyguard",
+		"level": 1,
+		"name": "护卫",
+		"text": "优先承受敌方攻击"
+	  },
+	  {
+		"id": "counter",
+		"level": 3,
+		"name": "反击",
+		"text": "受击后有概率反击"
+	  },
+	  {
+		"id": "aegis_aura",
+		"level": 6,
+		"name": "庇护光环",
+		"text": "全队获得少量减伤"
+	  }
+	],
+	"druid": [
+	  {
+		"id": "thorn_vine",
+		"level": 1,
+		"name": "毒藤",
+		"text": "周期自然伤害"
+	  },
+	  {
+		"id": "wild_regrowth",
+		"level": 3,
+		"name": "野性再生",
+		"text": "毒藤后全队恢复"
+	  },
+	  {
+		"id": "beast_shape",
+		"level": 6,
+		"name": "兽形",
+		"text": "低血量时提升生存"
+	  }
+	]
+  }
+}

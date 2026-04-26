@@ -1,0 +1,37 @@
+[
+  {
+	"id": "spring",
+	"name": "清泉休整",
+	"type": "heal",
+	"text": "队伍在清泉旁短暂休整，伤势得到处理。",
+	"xpBonus": 4
+  },
+  {
+	"id": "shrine",
+	"name": "旧神龛",
+	"type": "boon",
+	"text": "一座旧神龛亮起微光，队伍获得额外历练。",
+	"xpBonus": 8
+  },
+  {
+	"id": "cache",
+	"name": "遗失补给",
+	"type": "loot",
+	"text": "路边发现被尘土盖住的补给箱。",
+	"lootChance": 0.45
+  },
+  {
+	"id": "trap",
+	"name": "塌落陷阱",
+	"type": "hazard",
+	"text": "地面突然塌陷，队伍放慢脚步重新整队。",
+	"xpBonus": 2
+  },
+  {
+	"id": "wanderer",
+	"name": "旅人情报",
+	"type": "story",
+	"text": "一名旅人提供了下一段路线的怪物习性。",
+	"xpBonus": 6
+  }
+]

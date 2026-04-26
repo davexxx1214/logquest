@@ -6,6 +6,15 @@
 
 直接用浏览器打开 `index.html` 即可游玩。
 
+Godot 迁移版位于 `godot/`。当前目标是 Godot 4.6.2 .NET 的 Windows 桌面端，不做 Web 导出。
+
+```powershell
+cd godot
+dotnet build .\LogQuest.csproj
+```
+
+也可以用 Godot 4.6.2 .NET 版打开 `godot/project.godot`。
+
 ## 当前内容
 
 - 6 个地点：晨曦草原、旧矿山、沉没神殿、黑森林、魔法塔、边境要塞
@@ -20,6 +29,15 @@
 - 装备词缀、自动换装、职业技能解锁
 - 地图进度、职业解锁、地区解锁、迷宫层数推进
 - 快速模拟 100 场，用于测试当前队伍与层数强度
+
+## Godot 迁移进度
+
+- 已创建 `godot/project.godot` 与 Godot .NET C# 项目
+- 已迁移网页原型的职业、技能、地区、迷宫、怪物、装备、随机事件配置到 `godot/Data/*.json`
+- 已迁移核心 tile sheet 到 `godot/Assets/`
+- 已实现第一版 Godot 主界面骨架：大地图、出击计划、探索画面、英雄队伍、怪物图鉴、装备面板
+- 已接入 Godot 运行时状态、`user://logquest-save.json` 本地存档、英雄选择、最多两支小队出击、探索倒计时、自动战斗模拟和结算解锁
+- 下一步：把探索画面拆成独立场景，补齐攻击动画、血条插值、伤害飘字和装备自动换装
 
 ## 调数值入口
 

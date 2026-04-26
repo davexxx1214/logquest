@@ -1,0 +1,294 @@
+{
+  "rarity": [
+	{
+	  "name": "普通",
+	  "className": "loot-rarity-common",
+	  "chance": 0.58,
+	  "power": 1
+	},
+	{
+	  "name": "优秀",
+	  "className": "loot-rarity-uncommon",
+	  "chance": 0.28,
+	  "power": 1.35
+	},
+	{
+	  "name": "稀有",
+	  "className": "loot-rarity-rare",
+	  "chance": 0.11,
+	  "power": 1.85
+	},
+	{
+	  "name": "史诗",
+	  "className": "loot-rarity-epic",
+	  "chance": 0.03,
+	  "power": 2.6
+	}
+  ],
+  "slotNames": {
+	"weapon": "武器",
+	"armor": "防具",
+	"trinket": "饰品"
+  },
+  "itemCatalog": {
+	"粗糙短剑": {
+	  "slot": "weapon",
+	  "stats": [
+        "atk"
+	  ],
+	  "icon": "SW",
+	  "spriteIndex": 0
+	},
+	"兽皮护腕": {
+	  "slot": "armor",
+	  "stats": [
+		"def",
+        "hp"
+	  ],
+	  "icon": "GL",
+	  "spriteIndex": 1
+	},
+	"旅人斗篷": {
+	  "slot": "armor",
+	  "stats": [
+		"spd",
+        "def"
+	  ],
+	  "icon": "CP",
+	  "spriteIndex": 2
+	},
+	"蜂刺戒指": {
+	  "slot": "trinket",
+	  "stats": [
+		"crit",
+        "spd"
+	  ],
+	  "icon": "RG",
+	  "spriteIndex": 3
+	},
+	"矿工斧": {
+	  "slot": "weapon",
+	  "stats": [
+		"atk",
+        "crit"
+	  ],
+	  "icon": "AX",
+	  "spriteIndex": 4
+	},
+	"铁鳞甲": {
+	  "slot": "armor",
+	  "stats": [
+		"def",
+        "hp"
+	  ],
+	  "icon": "AR",
+	  "spriteIndex": 5
+	},
+	"硬壳盾": {
+	  "slot": "armor",
+	  "stats": [
+        "def"
+	  ],
+	  "icon": "SH",
+	  "spriteIndex": 6
+	},
+	"幽暗灯芯": {
+	  "slot": "trinket",
+	  "stats": [
+		"mag",
+        "crit"
+	  ],
+	  "icon": "LT",
+	  "spriteIndex": 7
+	},
+	"裂纹圣印": {
+	  "slot": "trinket",
+	  "stats": [
+		"mag",
+        "def"
+	  ],
+	  "icon": "SG",
+	  "spriteIndex": 8
+	},
+	"潮汐法杖": {
+	  "slot": "weapon",
+	  "stats": [
+        "mag"
+	  ],
+	  "icon": "ST",
+	  "spriteIndex": 9
+	},
+	"骨片护符": {
+	  "slot": "trinket",
+	  "stats": [
+		"hp",
+        "mag"
+	  ],
+	  "icon": "CH",
+	  "spriteIndex": 10
+	},
+	"石像肩甲": {
+	  "slot": "armor",
+	  "stats": [
+		"def",
+        "hp"
+	  ],
+	  "icon": "PA",
+	  "spriteIndex": 11
+	},
+	"荆棘短矛": {
+	  "slot": "weapon",
+	  "stats": [
+		"atk",
+        "mag"
+	  ],
+	  "icon": "SP",
+	  "spriteIndex": 12
+	},
+	"苔纹披肩": {
+	  "slot": "armor",
+	  "stats": [
+		"def",
+        "mag"
+	  ],
+	  "icon": "MC",
+	  "spriteIndex": 13
+	},
+	"月露护符": {
+	  "slot": "trinket",
+	  "stats": [
+		"hp",
+        "mag"
+	  ],
+	  "icon": "MD",
+	  "spriteIndex": 14
+	},
+	"古木指环": {
+	  "slot": "trinket",
+	  "stats": [
+		"def",
+        "crit"
+	  ],
+	  "icon": "OR",
+	  "spriteIndex": 15
+	},
+	"星屑魔杖": {
+	  "slot": "weapon",
+	  "stats": [
+		"mag",
+        "crit"
+	  ],
+	  "icon": "MW",
+	  "spriteIndex": 16
+	},
+	"抄写员长袍": {
+	  "slot": "armor",
+	  "stats": [
+		"mag",
+        "def"
+	  ],
+	  "icon": "SR",
+	  "spriteIndex": 17
+	},
+	"棱镜戒指": {
+	  "slot": "trinket",
+	  "stats": [
+		"mag",
+        "spd"
+	  ],
+	  "icon": "PR",
+	  "spriteIndex": 18
+	},
+	"符文书签": {
+	  "slot": "trinket",
+	  "stats": [
+		"crit",
+        "mag"
+	  ],
+	  "icon": "RB",
+	  "spriteIndex": 19
+	},
+	"边军长剑": {
+	  "slot": "weapon",
+	  "stats": [
+		"atk",
+        "def"
+	  ],
+	  "icon": "LS",
+	  "spriteIndex": 20
+	},
+	"壁垒胸甲": {
+	  "slot": "armor",
+	  "stats": [
+		"hp",
+        "def"
+	  ],
+	  "icon": "BA",
+	  "spriteIndex": 21
+	},
+	"军旗护符": {
+	  "slot": "trinket",
+	  "stats": [
+		"hp",
+        "atk"
+	  ],
+	  "icon": "BF",
+	  "spriteIndex": 22
+	},
+	"校尉戒指": {
+	  "slot": "trinket",
+	  "stats": [
+		"atk",
+        "crit"
+	  ],
+	  "icon": "CR",
+	  "spriteIndex": 23
+	}
+  },
+  "affixPool": [
+	{
+	  "name": "锋利",
+	  "stats": {
+		"atk": 1
+	  },
+	  "weight": 1.25
+	},
+	{
+	  "name": "秘纹",
+	  "stats": {
+		"mag": 1
+	  },
+	  "weight": 1.25
+	},
+	{
+	  "name": "坚韧",
+	  "stats": {
+		"hp": 6,
+		"def": 1
+	  },
+	  "weight": 1.05
+	},
+	{
+	  "name": "迅捷",
+	  "stats": {
+		"spd": 1,
+		"crit": 1
+	  },
+	  "weight": 1
+	},
+	{
+	  "name": "守护",
+	  "stats": {
+		"def": 2
+	  },
+	  "weight": 0.95
+	},
+	{
+	  "name": "鹰眼",
+	  "stats": {
+		"crit": 2
+	  },
+	  "weight": 0.9
+	}
+  ]
+}

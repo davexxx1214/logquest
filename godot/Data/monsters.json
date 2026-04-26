@@ -1,0 +1,386 @@
+{
+  "slime": {
+	"name": "绿泥史莱姆",
+	"mark": "S",
+	"spriteIndex": 0,
+	"family": "软体",
+	"colorA": "#67c45d",
+	"colorB": "#2f6c32",
+	"base": {
+	  "hp": 42,
+	  "atk": 8,
+	  "mag": 0,
+	  "def": 2,
+	  "spd": 5,
+	  "crit": 2
+	}
+  },
+  "wolf": {
+	"name": "草原野狼",
+	"mark": "W",
+	"spriteIndex": 1,
+	"family": "野兽",
+	"colorA": "#9a8c79",
+	"colorB": "#4b413b",
+	"base": {
+	  "hp": 54,
+	  "atk": 12,
+	  "mag": 0,
+	  "def": 3,
+	  "spd": 13,
+	  "crit": 8
+	}
+  },
+  "bandit": {
+	"name": "流窜盗贼",
+	"mark": "B",
+	"spriteIndex": 2,
+	"family": "人型",
+	"colorA": "#b65b3c",
+	"colorB": "#5c2a24",
+	"base": {
+	  "hp": 62,
+	  "atk": 13,
+	  "mag": 1,
+	  "def": 5,
+	  "spd": 9,
+	  "crit": 10
+	}
+  },
+  "hornet": {
+	"name": "针刺巨蜂",
+	"mark": "H",
+	"spriteIndex": 3,
+	"family": "虫群",
+	"colorA": "#d8b947",
+	"colorB": "#654720",
+	"base": {
+	  "hp": 45,
+	  "atk": 15,
+	  "mag": 0,
+	  "def": 2,
+	  "spd": 16,
+	  "crit": 12
+	}
+  },
+  "bat": {
+	"name": "矿洞蝙蝠",
+	"mark": "B",
+	"spriteIndex": 4,
+	"family": "野兽",
+	"colorA": "#6d6480",
+	"colorB": "#292334",
+	"base": {
+	  "hp": 70,
+	  "atk": 15,
+	  "mag": 0,
+	  "def": 4,
+	  "spd": 17,
+	  "crit": 8
+	}
+  },
+  "goblin": {
+	"name": "哥布林矿工",
+	"mark": "G",
+	"spriteIndex": 5,
+	"family": "人型",
+	"colorA": "#7bad4a",
+	"colorB": "#3f5127",
+	"base": {
+	  "hp": 88,
+	  "atk": 18,
+	  "mag": 0,
+	  "def": 8,
+	  "spd": 8,
+	  "crit": 6
+	}
+  },
+  "scarab": {
+	"name": "石壳虫",
+	"mark": "C",
+	"spriteIndex": 6,
+	"family": "虫群",
+	"colorA": "#8f7956",
+	"colorB": "#4a3b2b",
+	"base": {
+	  "hp": 104,
+	  "atk": 14,
+	  "mag": 0,
+	  "def": 14,
+	  "spd": 5,
+	  "crit": 3
+	}
+  },
+  "troll": {
+	"name": "矿洞巨魔",
+	"mark": "T",
+	"spriteIndex": 7,
+	"family": "巨人",
+	"colorA": "#9a7250",
+	"colorB": "#563a2c",
+	"base": {
+	  "hp": 150,
+	  "atk": 24,
+	  "mag": 0,
+	  "def": 10,
+	  "spd": 4,
+	  "crit": 5
+	}
+  },
+  "skeleton": {
+	"name": "骷髅侍从",
+	"mark": "S",
+	"spriteIndex": 8,
+	"family": "亡灵",
+	"colorA": "#d8d0ad",
+	"colorB": "#6d6752",
+	"base": {
+	  "hp": 110,
+	  "atk": 21,
+	  "mag": 2,
+	  "def": 10,
+	  "spd": 9,
+	  "crit": 7
+	}
+  },
+  "mire": {
+	"name": "淤泥怪",
+	"mark": "M",
+	"spriteIndex": 9,
+	"family": "软体",
+	"colorA": "#456b5d",
+	"colorB": "#22392f",
+	"base": {
+	  "hp": 142,
+	  "atk": 18,
+	  "mag": 8,
+	  "def": 12,
+	  "spd": 4,
+	  "crit": 2
+	}
+  },
+  "cultist": {
+	"name": "诅咒祭司",
+	"mark": "P",
+	"spriteIndex": 10,
+	"family": "人型",
+	"colorA": "#8d506c",
+	"colorB": "#3f2034",
+	"base": {
+	  "hp": 118,
+	  "atk": 12,
+	  "mag": 27,
+	  "def": 8,
+	  "spd": 10,
+	  "crit": 8
+	}
+  },
+  "gargoyle": {
+	"name": "石像守卫",
+	"mark": "G",
+	"spriteIndex": 11,
+	"family": "构装",
+	"colorA": "#849096",
+	"colorB": "#3d4549",
+	"base": {
+	  "hp": 176,
+	  "atk": 24,
+	  "mag": 4,
+	  "def": 18,
+	  "spd": 5,
+	  "crit": 4
+	}
+  },
+  "bramble": {
+	"name": "荆棘根须",
+	"mark": "R",
+	"spriteIndex": 12,
+	"family": "植物",
+	"colorA": "#486f38",
+	"colorB": "#25351e",
+	"base": {
+	  "hp": 165,
+	  "atk": 22,
+	  "mag": 12,
+	  "def": 15,
+	  "spd": 5,
+	  "crit": 3
+	}
+  },
+  "wisp": {
+	"name": "林间鬼火",
+	"mark": "F",
+	"spriteIndex": 13,
+	"family": "精魂",
+	"colorA": "#7ed6a4",
+	"colorB": "#2b5c55",
+	"base": {
+	  "hp": 116,
+	  "atk": 10,
+	  "mag": 32,
+	  "def": 8,
+	  "spd": 16,
+	  "crit": 10
+	}
+  },
+  "dryad": {
+	"name": "枯叶树妖",
+	"mark": "Y",
+	"spriteIndex": 14,
+	"family": "精魂",
+	"colorA": "#8fa35d",
+	"colorB": "#455231",
+	"base": {
+	  "hp": 152,
+	  "atk": 18,
+	  "mag": 24,
+	  "def": 13,
+	  "spd": 11,
+	  "crit": 8
+	}
+  },
+  "boar": {
+	"name": "铁鬃野猪",
+	"mark": "O",
+	"spriteIndex": 15,
+	"family": "野兽",
+	"colorA": "#8b6a55",
+	"colorB": "#432f2a",
+	"base": {
+	  "hp": 210,
+	  "atk": 31,
+	  "mag": 0,
+	  "def": 16,
+	  "spd": 9,
+	  "crit": 7
+	}
+  },
+  "apprentice": {
+	"name": "失控学徒",
+	"mark": "A",
+	"spriteIndex": 16,
+	"family": "人型",
+	"colorA": "#7261b9",
+	"colorB": "#33265f",
+	"base": {
+	  "hp": 156,
+	  "atk": 14,
+	  "mag": 38,
+	  "def": 12,
+	  "spd": 13,
+	  "crit": 10
+	}
+  },
+  "livingbook": {
+	"name": "活化典籍",
+	"mark": "L",
+	"spriteIndex": 17,
+	"family": "构装",
+	"colorA": "#b89058",
+	"colorB": "#5c3d2a",
+	"base": {
+	  "hp": 170,
+	  "atk": 18,
+	  "mag": 30,
+	  "def": 18,
+	  "spd": 8,
+	  "crit": 4
+	}
+  },
+  "manawyrm": {
+	"name": "法力幼龙",
+	"mark": "Y",
+	"spriteIndex": 18,
+	"family": "龙类",
+	"colorA": "#7ec0d8",
+	"colorB": "#2b5162",
+	"base": {
+	  "hp": 190,
+	  "atk": 26,
+	  "mag": 30,
+	  "def": 15,
+	  "spd": 15,
+	  "crit": 12
+	}
+  },
+  "mirror": {
+	"name": "回声魔镜",
+	"mark": "E",
+	"spriteIndex": 19,
+	"family": "构装",
+	"colorA": "#9da6cf",
+	"colorB": "#41476f",
+	"base": {
+	  "hp": 215,
+	  "atk": 18,
+	  "mag": 35,
+	  "def": 20,
+	  "spd": 7,
+	  "crit": 6
+	}
+  },
+  "deserter": {
+	"name": "要塞逃兵",
+	"mark": "D",
+	"spriteIndex": 20,
+	"family": "人型",
+	"colorA": "#98705f",
+	"colorB": "#4c3634",
+	"base": {
+	  "hp": 215,
+	  "atk": 34,
+	  "mag": 4,
+	  "def": 22,
+	  "spd": 11,
+	  "crit": 9
+	}
+  },
+  "warhound": {
+	"name": "披甲战犬",
+	"mark": "H",
+	"spriteIndex": 21,
+	"family": "野兽",
+	"colorA": "#6d6a65",
+	"colorB": "#303033",
+	"base": {
+	  "hp": 180,
+	  "atk": 37,
+	  "mag": 0,
+	  "def": 18,
+	  "spd": 18,
+	  "crit": 14
+	}
+  },
+  "ballista": {
+	"name": "自律弩机",
+	"mark": "X",
+	"spriteIndex": 22,
+	"family": "构装",
+	"colorA": "#9a8062",
+	"colorB": "#4c3b2d",
+	"base": {
+	  "hp": 240,
+	  "atk": 42,
+	  "mag": 0,
+	  "def": 26,
+	  "spd": 5,
+	  "crit": 8
+	}
+  },
+  "captain": {
+	"name": "亡国校尉",
+	"mark": "C",
+	"spriteIndex": 23,
+	"family": "亡灵",
+	"colorA": "#8c91a0",
+	"colorB": "#3b3d4c",
+	"base": {
+	  "hp": 270,
+	  "atk": 38,
+	  "mag": 18,
+	  "def": 28,
+	  "spd": 10,
+	  "crit": 11
+	}
+  }
+}

@@ -3,3 +3,8 @@ dist/
 .DS_Store
 Thumbs.db
 *.log
+godot/.godot/
+godot/.import/
+godot/bin/
+godot/obj/
+godot/.mono/

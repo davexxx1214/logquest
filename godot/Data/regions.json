@@ -1,0 +1,351 @@
+[
+  {
+	"id": "meadow",
+	"name": "晨曦草原",
+	"tone": "低威胁",
+	"description": "边境村落外的风车草原。野兽与盗贼会在清晨巡游，适合第一批队伍测试自动战斗。",
+	"unlocks": [
+	  "第 3 层: 猎人职业",
+      "第 5 层: 旧矿山路线"
+	],
+	"rewards": [
+	  {
+		"floor": 3,
+		"classes": [
+          "hunter"
+		],
+		"message": "猎人加入了营地。"
+	  },
+	  {
+		"floor": 5,
+		"regions": [
+          "mine"
+		],
+		"message": "通往旧矿山的路标被重新立起。"
+	  }
+	],
+	"scene": [
+	  "#8fd3d2",
+	  "#f0ce78",
+	  "#61a05f",
+	  "#356d42",
+	  "#7cb84f",
+      "#3f6f38"
+	],
+	"icon": [
+	  "#a5d66d",
+      "#4c853b"
+	],
+	"dungeons": [
+	  {
+		"id": "beast-trail",
+		"name": "野兽小径",
+		"floors": 8,
+		"levelRange": [
+		  1,
+		  8
+		],
+		"monsterIds": [
+		  "slime",
+		  "wolf",
+		  "bandit",
+          "hornet"
+		],
+		"lootTable": [
+		  "粗糙短剑",
+		  "兽皮护腕",
+		  "旅人斗篷",
+          "蜂刺戒指"
+		]
+	  }
+	]
+  },
+  {
+	"id": "mine",
+	"name": "旧矿山",
+	"tone": "中威胁",
+	"description": "废弃矿道仍有火把在闪。矿工传说里，塌方深处埋着可强化前排职业的矿铁。",
+	"unlocks": [
+	  "第 4 层: 骑士职业",
+      "第 7 层: 沉没神殿线索"
+	],
+	"rewards": [
+	  {
+		"floor": 4,
+		"classes": [
+          "knight"
+		],
+		"message": "一名骑士接受了远征雇佣。"
+	  },
+	  {
+		"floor": 7,
+		"regions": [
+          "temple"
+		],
+		"message": "矿石碑文指向了沉没神殿。"
+	  }
+	],
+	"scene": [
+	  "#55636b",
+	  "#2d3642",
+	  "#826039",
+	  "#4d3229",
+	  "#6c573f",
+      "#36281f"
+	],
+	"icon": [
+	  "#82705b",
+      "#3d3030"
+	],
+	"dungeons": [
+	  {
+		"id": "fallen-shaft",
+		"name": "塌陷矿洞",
+		"floors": 10,
+		"levelRange": [
+		  4,
+		  14
+		],
+		"monsterIds": [
+		  "bat",
+		  "goblin",
+		  "scarab",
+          "troll"
+		],
+		"lootTable": [
+		  "矿工斧",
+		  "铁鳞甲",
+		  "硬壳盾",
+          "幽暗灯芯"
+		]
+	  }
+	]
+  },
+  {
+	"id": "temple",
+	"name": "沉没神殿",
+	"tone": "高威胁",
+	"description": "半截石阶沉在潮水里，神殿回廊会放大治疗与诅咒的价值。这里是僧侣定位的第一块试金石。",
+	"unlocks": [
+	  "第 5 层: 法师职业",
+      "第 8 层: 黑森林入口"
+	],
+	"rewards": [
+	  {
+		"floor": 5,
+		"classes": [
+          "mage"
+		],
+		"message": "神殿残卷唤来了法师学派的协助。"
+	  },
+	  {
+		"floor": 8,
+		"regions": [
+          "forest"
+		],
+		"message": "潮水退去，黑森林的古道显露出来。"
+	  }
+	],
+	"scene": [
+	  "#436c7f",
+	  "#223544",
+	  "#537c73",
+	  "#2d5551",
+	  "#43515e",
+      "#1d2630"
+	],
+	"icon": [
+	  "#629bb0",
+      "#24505c"
+	],
+	"dungeons": [
+	  {
+		"id": "sunken-cloister",
+		"name": "潮湿回廊",
+		"floors": 12,
+		"levelRange": [
+		  8,
+		  22
+		],
+		"monsterIds": [
+		  "skeleton",
+		  "mire",
+		  "cultist",
+          "gargoyle"
+		],
+		"lootTable": [
+		  "裂纹圣印",
+		  "潮汐法杖",
+		  "骨片护符",
+          "石像肩甲"
+		]
+	  }
+	]
+  },
+  {
+	"id": "forest",
+	"name": "黑森林",
+	"tone": "精英威胁",
+	"description": "树冠遮住星光，腐殖土里藏着古老根须。持续恢复和自然抗性在这里更有价值。",
+	"unlocks": [
+	  "第 5 层: 德鲁伊职业",
+      "第 8 层: 魔法塔坐标"
+	],
+	"rewards": [
+	  {
+		"floor": 5,
+		"classes": [
+          "druid"
+		],
+		"message": "德鲁伊从林间营火旁加入队伍。"
+	  },
+	  {
+		"floor": 8,
+		"regions": [
+          "tower"
+		],
+		"message": "林中石环指出了魔法塔的位置。"
+	  }
+	],
+	"scene": [
+	  "#2e5a48",
+	  "#172c27",
+	  "#456b32",
+	  "#233e29",
+	  "#34492b",
+      "#182219"
+	],
+	"icon": [
+	  "#4f8f52",
+      "#1c3a28"
+	],
+	"dungeons": [
+	  {
+		"id": "root-hollow",
+		"name": "根须空洞",
+		"floors": 12,
+		"levelRange": [
+		  14,
+		  28
+		],
+		"monsterIds": [
+		  "bramble",
+		  "wisp",
+		  "dryad",
+          "boar"
+		],
+		"lootTable": [
+		  "荆棘短矛",
+		  "苔纹披肩",
+		  "月露护符",
+          "古木指环"
+		]
+	  }
+	]
+  },
+  {
+	"id": "tower",
+	"name": "魔法塔",
+	"tone": "奥术威胁",
+	"description": "塔内楼梯会自行转向，书页与镜面都可能先于敌人发动攻击。高魔力装备开始变得关键。",
+	"unlocks": [
+	  "第 6 层: 边境要塞情报",
+      "第 10 层: 奥术武具"
+	],
+	"rewards": [
+	  {
+		"floor": 6,
+		"regions": [
+          "fortress"
+		],
+		"message": "塔顶星图标出了边境要塞的补给线。"
+	  }
+	],
+	"scene": [
+	  "#51456f",
+	  "#241f39",
+	  "#7b6c9b",
+	  "#41375e",
+	  "#56516a",
+      "#242431"
+	],
+	"icon": [
+	  "#7e74bb",
+      "#312656"
+	],
+	"dungeons": [
+	  {
+		"id": "spiral-archive",
+		"name": "螺旋书库",
+		"floors": 14,
+		"levelRange": [
+		  20,
+		  36
+		],
+		"monsterIds": [
+		  "apprentice",
+		  "livingbook",
+		  "manawyrm",
+          "mirror"
+		],
+		"lootTable": [
+		  "星屑魔杖",
+		  "抄写员长袍",
+		  "棱镜戒指",
+          "符文书签"
+		]
+	  }
+	]
+  },
+  {
+	"id": "fortress",
+	"name": "边境要塞",
+	"tone": "首领威胁",
+	"description": "旧王国的军械仍在城墙上运转。这里用来测试中期队伍的承伤、续航和爆发窗口。",
+	"unlocks": [
+	  "第 8 层: 中期远征完成",
+      "第 12 层: 高阶装备"
+	],
+	"rewards": [
+	  {
+		"floor": 8,
+		"message": "边境要塞的烽火重新点亮，中期远征线完成。"
+	  }
+	],
+	"scene": [
+	  "#756b63",
+	  "#35313a",
+	  "#8b6d55",
+	  "#4b3d36",
+	  "#6d635a",
+      "#28252a"
+	],
+	"icon": [
+	  "#9a8272",
+      "#4c4244"
+	],
+	"dungeons": [
+	  {
+		"id": "bastion-keep",
+		"name": "断墙内堡",
+		"floors": 16,
+		"levelRange": [
+		  28,
+		  48
+		],
+		"monsterIds": [
+		  "deserter",
+		  "warhound",
+		  "ballista",
+          "captain"
+		],
+		"lootTable": [
+		  "边军长剑",
+		  "壁垒胸甲",
+		  "军旗护符",
+          "校尉戒指"
+		]
+	  }
+	]
+  }
+]
