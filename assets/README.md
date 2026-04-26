@@ -10,12 +10,25 @@ Generated with GPT Image 2 for the current LogQuest prototype. Each final PNG ha
   - Rows: idle, attack, hurt, cast
   - Current UI uses the idle row for hero portraits.
 
+- `heroes-16bit-v2.png`
+  - Layout: 6 columns x 4 rows
+  - Columns: warrior, mage, monk, hunter, knight, druid
+  - Rows: walk 1, walk 2, battle idle, attack
+  - All hero frames face right for left-to-right side scrolling.
+  - Current UI uses this sheet for portraits and exploration animation.
+
 - `monsters-16bit.png`
   - Layout: 6 columns x 4 rows
   - Row 1: slime, wolf, bandit, hornet, bat, goblin
   - Row 2: scarab, troll, skeleton, mire, cultist, gargoyle
   - Row 3: bramble, wisp, dryad, boar, apprentice, livingbook
   - Row 4: manawyrm, mirror, deserter, warhound, ballista, captain
+
+- `monsters-16bit-v2.png`
+  - Layout: 6 columns x 8 rows
+  - Row pairs: idle row, attack row for each group of 6 monsters
+  - Monster order matches `monsters.*.spriteIndex`
+  - Current UI uses this sheet directly; enemies are expected to face left toward the right-facing heroes.
 
 - `items-16bit.png`
   - Layout: 8 columns x 3 rows
@@ -29,6 +42,6 @@ The `*-source.png` files keep the original chroma-key background for future repr
 
 ## Code Mapping
 
-- Hero columns come from `classData.*.spriteIndex`.
-- Monster tiles come from `monsters.*.spriteIndex`.
+- Hero columns come from `classData.*.spriteIndex`; animation rows are selected by `heroSpriteIndex`.
+- Monster tiles come from `monsters.*.spriteIndex`; idle/attack row pairs are selected by `monsterSpriteIndex`.
 - Item tiles come from `itemCatalog.*.spriteIndex`.

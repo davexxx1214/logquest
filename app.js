@@ -1,5 +1,12 @@
 const SAVE_KEY = "logquest.prototype.v1";
 const TEAM_LIMIT = 3;
+const MAX_ACTIVE_RUNS = 2;
+const HERO_SHEET = "assets/heroes-16bit-v2.png";
+const MONSTER_SHEET = "assets/monsters-16bit-v2.png";
+const HERO_SHEET_COLUMNS = 6;
+const HERO_SHEET_ROWS = 4;
+const MONSTER_SHEET_COLUMNS = 6;
+const MONSTER_SHEET_ROWS = 8;
 const INITIAL_UNLOCKED_REGIONS = ["meadow"];
 const INITIAL_UNLOCKED_CLASSES = ["warrior", "monk"];
 const INITIAL_FLOOR_CAP = 3;
@@ -321,6 +328,14 @@ const affixPool = [
   { name: "鹰眼", stats: { crit: 2 }, weight: 0.9 }
 ];
 
+const explorationEvents = [
+  { id: "spring", name: "清泉休整", type: "heal", text: "队伍在清泉旁短暂休整，伤势得到处理。", xpBonus: 4 },
+  { id: "shrine", name: "旧神龛", type: "boon", text: "一座旧神龛亮起微光，队伍获得额外历练。", xpBonus: 8 },
+  { id: "cache", name: "遗失补给", type: "loot", text: "路边发现被尘土盖住的补给箱。", lootChance: 0.45 },
+  { id: "trap", name: "塌落陷阱", type: "hazard", text: "地面突然塌陷，队伍放慢脚步重新整队。", xpBonus: 2 },
+  { id: "wanderer", name: "旅人情报", type: "story", text: "一名旅人提供了下一段路线的怪物习性。", xpBonus: 6 }
+];
+
 let state = loadState();
 let selectedRegionId = state.selectedRegionId || regions[0].id;
 let selectedDungeonId = state.selectedDungeonId || regions[0].dungeons[0].id;
@@ -342,9 +357,9 @@ const els = {
   startBtn: document.querySelector("#startBtn"),
   quickBtn: document.querySelector("#quickBtn"),
   activeRun: document.querySelector("#activeRun"),
-  activeRunTitle: document.querySelector("#activeRunTitle"),
-  timeLeft: document.querySelector("#timeLeft"),
-  runProgress: document.querySelector("#runProgress"),
+  activeRunList: document.querySelector("#activeRunList"),
+  activeRunCount: document.querySelector("#activeRunCount"),
+  explorationStage: document.querySelector("#explorationStage"),
   heroList: document.querySelector("#heroList"),
   teamCount: document.querySelector("#teamCount"),
   monsterList: document.querySelector("#monsterList"),
@@ -387,7 +402,7 @@ function loadState() {
     progression: createInitialProgression(),
     inventory: [],
     history: [],
-    activeRun: null
+    activeRuns: []
   };
 
   try {
@@ -399,15 +414,14 @@ function loadState() {
       progression: mergeProgression(stored.progression, stored),
       heroes: mergeHeroes(stored.heroes || defaults.heroes),
       inventory: Array.isArray(stored.inventory) ? stored.inventory.slice(0, 60) : [],
-      selectedHeroIds: (stored.selectedHeroIds || defaults.selectedHeroIds).slice(0, TEAM_LIMIT)
+      selectedHeroIds: (stored.selectedHeroIds || defaults.selectedHeroIds).slice(0, TEAM_LIMIT),
+      activeRuns: normalizeActiveRuns(stored.activeRuns || (stored.activeRun ? [stored.activeRun] : []))
     };
+    delete merged.activeRun;
     merged.heroes.forEach((hero) => {
       hero.unlocked = merged.progression.unlockedClasses.includes(hero.id);
     });
     merged.selectedHeroIds = merged.selectedHeroIds.filter((id) => merged.progression.unlockedClasses.includes(id));
-    if (!merged.selectedHeroIds.length) {
-      merged.selectedHeroIds = merged.heroes.filter((hero) => hero.unlocked).slice(0, TEAM_LIMIT).map((hero) => hero.id);
-    }
     return merged;
   } catch {
     return defaults;
@@ -473,6 +487,31 @@ function normalizeProgression(progression) {
   });
 }
 
+function normalizeActiveRuns(runs) {
+  return (Array.isArray(runs) ? runs : [])
+    .filter((run) => run && run.id && Array.isArray(run.heroIds) && run.startedAt && run.endAt)
+    .slice(0, MAX_ACTIVE_RUNS)
+    .map((run) => ({
+      ...run,
+      heroIds: run.heroIds.slice(0, TEAM_LIMIT),
+      exploration: run.exploration || buildLegacyExploration(run)
+    }));
+}
+
+function buildLegacyExploration(run) {
+  const region = regions.find((item) => item.id === run.regionId) || regions[0];
+  const dungeon = region.dungeons.find((item) => item.id === run.dungeonId) || region.dungeons[0];
+  const success = Boolean(run.simulation?.success);
+  return {
+    events: [],
+    segments: [
+      { kind: "travel", start: 0, end: 0.36, title: "继续推进", text: `${region.name} 的路线仍在前方延伸。` },
+      { kind: "battle", start: 0.36, end: 0.9, title: "遭遇战", text: `${dungeon.name} 的敌人拦住了队伍。` },
+      { kind: "aftermath", start: 0.9, end: 1, title: success ? "战斗结束" : "准备撤退", text: success ? "队伍正在清点战利品。" : "队伍正在寻找撤退路线。" }
+    ]
+  };
+}
+
 function createEmptyEquipment() {
   return { weapon: null, armor: null, trinket: null };
 }
@@ -509,6 +548,29 @@ function getCompletedFloor(dungeonId) {
   return state.progression.completedFloors[dungeonId] || 0;
 }
 
+function getActiveRuns() {
+  if (!Array.isArray(state.activeRuns)) {
+    state.activeRuns = normalizeActiveRuns(state.activeRun ? [state.activeRun] : []);
+    delete state.activeRun;
+  }
+  return state.activeRuns;
+}
+
+function hasActiveRuns() {
+  return getActiveRuns().length > 0;
+}
+
+function getBusyHeroIds() {
+  return new Set(getActiveRuns().flatMap((run) => run.heroIds || []));
+}
+
+function getAvailableHeroIds() {
+  const busy = getBusyHeroIds();
+  return state.heroes
+    .filter((hero) => hero.unlocked && !busy.has(hero.id))
+    .map((hero) => hero.id);
+}
+
 function ensureSelection() {
   const unlockedRegion = regions.find((region) => isRegionUnlocked(region.id)) || regions[0];
   if (!isRegionUnlocked(selectedRegionId)) {
@@ -530,10 +592,10 @@ function ensureSelection() {
     selectedFloor = 1;
   }
 
-  state.selectedHeroIds = state.selectedHeroIds.filter((id) => isClassUnlocked(id)).slice(0, TEAM_LIMIT);
-  if (!state.selectedHeroIds.length) {
-    state.selectedHeroIds = state.heroes.filter((hero) => hero.unlocked).slice(0, TEAM_LIMIT).map((hero) => hero.id);
-  }
+  const busy = getBusyHeroIds();
+  state.selectedHeroIds = state.selectedHeroIds
+    .filter((id) => isClassUnlocked(id) && !busy.has(id))
+    .slice(0, TEAM_LIMIT);
 }
 
 function getHero(id) {
@@ -592,11 +654,12 @@ function render() {
   ensureSelection();
   renderMap();
   renderMission();
+  renderExploration();
   renderHeroes();
   renderMonsters();
   renderLogs();
   renderLoot();
-  updateActiveRun();
+  updateActiveRuns();
 }
 
 function renderMap() {
@@ -660,16 +723,23 @@ function renderMission() {
 
   els.floorMeterFill.style.width = `${Math.round((selectedFloor / dungeon.floors) * 100)}%`;
   els.dangerBadge.textContent = `Lv.${minLevel}-${maxLevel} · ${completed}/${dungeon.floors}`;
-  els.startBtn.disabled = Boolean(state.activeRun) || state.selectedHeroIds.length === 0 || cap === 0;
+  const busy = getBusyHeroIds();
+  const hasBusySelection = state.selectedHeroIds.some((id) => busy.has(id));
+  els.startBtn.disabled = getActiveRuns().length >= MAX_ACTIVE_RUNS || hasBusySelection || state.selectedHeroIds.length === 0 || cap === 0;
+  els.startBtn.textContent =
+    getActiveRuns().length >= MAX_ACTIVE_RUNS ? "远征栏位已满" :
+    state.selectedHeroIds.length === 0 ? "选择英雄后出击" : "派遣队伍";
 }
 
 function renderHeroes() {
   els.teamCount.textContent = `${state.selectedHeroIds.length} / ${TEAM_LIMIT}`;
   els.heroList.innerHTML = "";
+  const busy = getBusyHeroIds();
   state.heroes.forEach((hero) => {
     const data = classData[hero.id];
     const stats = heroStats(hero);
     const selected = state.selectedHeroIds.includes(hero.id);
+    const isBusy = busy.has(hero.id);
     const nextXp = xpForLevel(hero.level);
     const skills = hero.unlocked ? getUnlockedSkills(hero.id, hero.level) : [];
     const gearPower = getEquippedItems(hero).reduce((sum, item) => sum + scoreItem(item), 0);
@@ -678,15 +748,15 @@ function renderHeroes() {
       .join(" / ");
     const button = document.createElement("button");
     button.type = "button";
-    button.disabled = !hero.unlocked;
-    button.className = `hero-tile ${selected ? "selected" : ""} ${hero.unlocked ? "" : "locked"}`;
+    button.disabled = !hero.unlocked || isBusy;
+    button.className = `hero-tile ${selected ? "selected" : ""} ${hero.unlocked ? "" : "locked"} ${isBusy ? "busy" : ""}`;
     button.style.setProperty("--sprite-a", data.colorA);
     button.style.setProperty("--sprite-b", data.colorB);
     button.innerHTML = `
-      <span class="hero-portrait art-sprite" style="${spriteSheetStyle("assets/heroes-16bit.png", data.spriteIndex, 6, 4)}" aria-hidden="true"></span>
+      <span class="hero-portrait art-sprite" style="${spriteSheetStyle(HERO_SHEET, heroSpriteIndex(data.spriteIndex, 2), HERO_SHEET_COLUMNS, HERO_SHEET_ROWS)}" aria-hidden="true"></span>
       <span>
         <strong>${data.name} Lv.${hero.level}</strong>
-        <span class="small-line">${hero.unlocked ? `${data.role} · XP ${hero.xp}/${nextXp} · 装等 ${gearPower}` : `未解锁 · 来源: ${data.unlock}`}</span>
+        <span class="small-line">${hero.unlocked ? `${isBusy ? "远征中 · " : ""}${data.role} · XP ${hero.xp}/${nextXp} · 装等 ${gearPower}` : `未解锁 · 来源: ${data.unlock}`}</span>
         <span class="hero-statbar">
           <span>HP ${stats.hp}</span><span>ATK ${stats.atk}</span><span>MAG ${stats.mag}</span><span>DEF ${stats.def}</span><span>SPD ${stats.spd}</span><span>CRT ${stats.crit}</span>
         </span>
@@ -714,7 +784,7 @@ function renderMonsters() {
     row.style.setProperty("--sprite-a", monster.colorA);
     row.style.setProperty("--sprite-b", monster.colorB);
     row.innerHTML = `
-      <span class="monster-sprite art-sprite" style="${spriteSheetStyle("assets/monsters-16bit.png", monster.spriteIndex, 6, 4)}" aria-hidden="true"></span>
+      <span class="monster-sprite art-sprite" style="${spriteSheetStyle(MONSTER_SHEET, monsterSpriteIndex(monster.spriteIndex, false), MONSTER_SHEET_COLUMNS, MONSTER_SHEET_ROWS)}" aria-hidden="true"></span>
       <span>
         <strong>${monster.name}</strong>
         <span class="small-line">${monster.family} · HP ${stats.hp} · ATK ${stats.atk} · DEF ${stats.def}</span>
@@ -724,11 +794,202 @@ function renderMonsters() {
   });
 }
 
+function renderExploration() {
+  const runs = getActiveRuns();
+  els.activeRunCount.textContent = `${runs.length} / ${MAX_ACTIVE_RUNS}`;
+
+  if (!runs.length) {
+    const region = getRegion();
+    els.explorationStage.innerHTML = `
+      <div class="explore-empty">
+        <span>
+          <strong>等待队伍出发</strong>
+          <span class="small-line">派遣后这里会显示横版探索、随机事件与自动战斗画面</span>
+        </span>
+      </div>
+    `;
+    els.explorationStage.firstElementChild?.style.setProperty("--scene-sky-a", region.scene[0]);
+    els.explorationStage.firstElementChild?.style.setProperty("--scene-sky-b", region.scene[1]);
+    return;
+  }
+
+  els.explorationStage.innerHTML = runs.map((run, index) => renderRunCard(run, index)).join("");
+}
+
+function renderRunCard(run, index) {
+  const phase = getRunPhase(run);
+  const progress = Math.min(100, Math.max(0, Math.round(((Date.now() - run.startedAt) / run.durationMs) * 100)));
+  const remaining = formatTime(run.endAt - Date.now());
+  return `
+    <div class="run-card">
+      <div class="run-card-head">
+        <span>
+          <strong>${run.regionName} / ${run.dungeonName} 第 ${run.floor} 层</strong>
+          <span class="small-line">小队 ${index + 1} · ${run.heroIds.map((id) => classData[id]?.name || id).join(" / ")}</span>
+        </span>
+        <span class="chip">${remaining}</span>
+      </div>
+      ${renderSideScene(run, phase)}
+      <div class="run-foot">
+        <div class="phase-track" aria-hidden="true"><span style="--progress:${progress}%"></span></div>
+        <span class="small-line">${phase.title} · ${phase.text}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderSideScene(run, phase) {
+  const region = regions.find((item) => item.id === run.regionId) || getRegion();
+  const sceneVars = `--scene-sky-a:${region.scene[0]};--scene-sky-b:${region.scene[1]};--scene-mid-a:${region.scene[2]};--scene-mid-b:${region.scene[3]};--scene-ground-a:${region.scene[4]};--scene-ground-b:${region.scene[5]};`;
+  const battleProgress = phase.kind === "battle" ? phase.localProgress : 0;
+  const heroes = run.heroIds
+    .map((heroId, index) => {
+      return renderSceneHero(heroId, run, battleProgress, phase.kind, phase.kind === "battle");
+    })
+    .join("");
+  const enemies = phase.kind === "battle" ? renderSceneEnemies(run, battleProgress) : "";
+  const eventMarker = phase.kind === "event" ? `<div class="event-marker">${phase.title}：${phase.text}</div>` : "";
+  const damagePops = phase.kind === "battle" ? renderDamagePops(run, phase.elapsedRatio) : "";
+
+  return `
+    <div class="side-scene ${phase.kind}" style="${sceneVars}">
+      <div class="scene-banner">
+        <span>${phase.kind === "battle" ? "AUTO BATTLE" : phase.kind === "event" ? "RANDOM EVENT" : "EXPLORING"}</span>
+        <span>${phase.title}</span>
+      </div>
+      <div class="scene-path"></div>
+      <div class="scene-party">${heroes}</div>
+      <div class="scene-enemies">${enemies}</div>
+      ${eventMarker}
+      ${damagePops}
+    </div>
+  `;
+}
+
+function renderSceneHero(heroId, run, battleProgress, phaseKind, active) {
+  const data = classData[heroId];
+  const finalHero = run.simulation?.team?.find((hero) => hero.id === heroId);
+  const hp = finalHero ? interpolateHp(finalHero.maxHp, finalHero.hp, battleProgress) : 1;
+  const maxHp = finalHero?.maxHp || hp;
+  const row = phaseKind === "battle" ? 2 : 0;
+  const spriteIndex = heroSpriteIndex(data.spriteIndex, row);
+  const frameClass = phaseKind === "battle" ? "hero-battle" : "hero-walk";
+  return `
+    <span class="unit-stand" title="${data.name}">
+      <span class="scene-unit ${frameClass} ${active ? "hero-active" : ""}" style="${spriteSheetStyle(HERO_SHEET, spriteIndex, HERO_SHEET_COLUMNS, HERO_SHEET_ROWS)}${heroAnimationVars(data.spriteIndex)}"></span>
+      <span class="hp-bar"><span style="--hp:${hpPercent(hp, maxHp)}%"></span></span>
+    </span>
+  `;
+}
+
+function renderSceneEnemies(run, battleProgress) {
+  return (run.simulation?.encounter || [])
+    .map((enemy, index) => {
+      const template = monsters[enemy.monsterId];
+      const finalEnemy = run.simulation?.enemyTeam?.find((item) => item.id === enemy.id) || enemy;
+      const hp = interpolateHp(enemy.maxHp, finalEnemy.hp, battleProgress);
+      const spriteIndex = monsterSpriteIndex(template.spriteIndex, false);
+      return `
+        <span class="unit-stand" title="${enemy.name} Lv.${enemy.level}">
+          <span class="scene-unit monster-battle monster-active" style="${spriteSheetStyle(MONSTER_SHEET, spriteIndex, MONSTER_SHEET_COLUMNS, MONSTER_SHEET_ROWS)}${monsterAnimationVars(template.spriteIndex)}"></span>
+          <span class="hp-bar"><span style="--hp:${hpPercent(hp, enemy.maxHp)}%"></span></span>
+        </span>
+      `;
+    })
+    .join("");
+}
+
+function renderDamagePops(run, elapsedRatio) {
+  const combatLogs = (run.simulation?.logs || []).filter((entry) => entry.meta?.kind === "damage" || entry.meta?.kind === "heal");
+  const recent = combatLogs
+    .filter((entry) => typeof entry.revealAt !== "number" || (entry.revealAt <= elapsedRatio && elapsedRatio - entry.revealAt < 0.085))
+    .slice(-4);
+  return recent
+    .map((entry, index) => {
+      const isHeal = entry.meta.kind === "heal";
+      const value = isHeal ? `+${entry.meta.amount}` : entry.meta.amount;
+      const popX = popPositionPercent(run, entry);
+      return `<span class="damage-pop ${isHeal ? "heal" : ""}" style="--pop-x:${popX}%;--pop-delay:${index * 70}ms">${value}</span>`;
+    })
+    .join("");
+}
+
+function getRunPhase(run) {
+  const elapsedRatio = Math.max(0, Math.min(1, (Date.now() - run.startedAt) / run.durationMs));
+  const segments = run.exploration?.segments || buildLegacyExploration(run).segments;
+  const phase = segments.find((segment) => elapsedRatio >= segment.start && elapsedRatio < segment.end) || segments[segments.length - 1];
+  const span = Math.max(0.01, phase.end - phase.start);
+  return {
+    ...phase,
+    elapsedRatio,
+    localProgress: Math.max(0, Math.min(1, (elapsedRatio - phase.start) / span))
+  };
+}
+
+function interpolateHp(maxHp, finalHp, progress) {
+  return Math.max(0, Math.round(maxHp - (maxHp - finalHp) * Math.max(0, Math.min(1, progress))));
+}
+
+function hpPercent(hp, maxHp) {
+  if (!maxHp) return 0;
+  return Math.max(0, Math.min(100, Math.round((hp / maxHp) * 100)));
+}
+
+function popPositionPercent(run, entry) {
+  const target = entry.meta?.target || {};
+  if (target.side === "hero") {
+    const index = Math.max(0, run.heroIds.indexOf(target.id));
+    return 12 + index * 11;
+  }
+
+  const enemies = run.simulation?.encounter || [];
+  const index = Math.max(0, enemies.findIndex((enemy) => enemy.id === target.id));
+  return Math.max(54, 88 - index * 9);
+}
+
+function heroSpriteIndex(classIndex, row) {
+  return row * HERO_SHEET_COLUMNS + classIndex;
+}
+
+function monsterSpriteIndex(monsterIndex, attacking) {
+  const group = Math.floor(monsterIndex / MONSTER_SHEET_COLUMNS);
+  const column = monsterIndex % MONSTER_SHEET_COLUMNS;
+  const row = group * 2 + (attacking ? 1 : 0);
+  return row * MONSTER_SHEET_COLUMNS + column;
+}
+
+function heroAnimationVars(classIndex) {
+  return [
+    `--sprite-x:${spriteX(classIndex, HERO_SHEET_COLUMNS)}%;`,
+    `--hero-walk-a:${spriteY(0, HERO_SHEET_ROWS)}%;`,
+    `--hero-walk-b:${spriteY(1, HERO_SHEET_ROWS)}%;`,
+    `--hero-idle:${spriteY(2, HERO_SHEET_ROWS)}%;`,
+    `--hero-attack:${spriteY(3, HERO_SHEET_ROWS)}%;`
+  ].join("");
+}
+
+function monsterAnimationVars(monsterIndex) {
+  const group = Math.floor(monsterIndex / MONSTER_SHEET_COLUMNS);
+  return [
+    `--sprite-x:${spriteX(monsterIndex % MONSTER_SHEET_COLUMNS, MONSTER_SHEET_COLUMNS)}%;`,
+    `--monster-idle:${spriteY(group * 2, MONSTER_SHEET_ROWS)}%;`,
+    `--monster-attack:${spriteY(group * 2 + 1, MONSTER_SHEET_ROWS)}%;`
+  ].join("");
+}
+
+function spriteX(column, columns) {
+  return columns === 1 ? 0 : (column / (columns - 1)) * 100;
+}
+
+function spriteY(row, rows) {
+  return rows === 1 ? 0 : (row / (rows - 1)) * 100;
+}
+
 function renderLogs() {
   const visibleLogs = getVisibleLogs();
   if (!visibleLogs.length) {
     els.combatLog.innerHTML = `<p class="log-entry">选择地点、层数和最多 3 名英雄，然后派遣队伍。战斗会自动进行，日志只读。</p>`;
-    els.resultBadge.textContent = state.activeRun ? "进行中" : "等待出击";
+    els.resultBadge.textContent = hasActiveRuns() ? "进行中" : "等待出击";
     return;
   }
 
@@ -737,8 +998,8 @@ function renderLogs() {
     .join("");
   els.combatLog.scrollTop = els.combatLog.scrollHeight;
 
-  if (state.activeRun) {
-    els.resultBadge.textContent = "进行中";
+  if (hasActiveRuns()) {
+    els.resultBadge.textContent = `进行中 ${getActiveRuns().length}/${MAX_ACTIVE_RUNS}`;
   } else if (state.history[0]) {
     els.resultBadge.textContent = state.history[0].success ? "挑战成功" : "挑战失败";
   }
@@ -798,8 +1059,8 @@ function renderItemRow(item, label) {
 }
 
 function toggleHero(heroId) {
-  if (state.activeRun) return;
   if (!isClassUnlocked(heroId)) return;
+  if (getBusyHeroIds().has(heroId)) return;
   const selected = state.selectedHeroIds.includes(heroId);
   if (selected) {
     state.selectedHeroIds = state.selectedHeroIds.filter((id) => id !== heroId);
@@ -822,30 +1083,116 @@ function getDurationMs(floor) {
   return (25 + floor * 16) * 1000;
 }
 
+function createExplorationPlan(region, dungeon, floor, simulation) {
+  const eventCount = floor >= 8 ? 2 : 1;
+  const events = [];
+  for (let index = 0; index < eventCount; index += 1) {
+    if (Math.random() > 0.72 && index > 0) continue;
+    const template = explorationEvents[rand(0, explorationEvents.length - 1)];
+    events.push({
+      ...template,
+      at: 0.22 + index * 0.15
+    });
+  }
+
+  const segments = [
+    { kind: "travel", start: 0, end: events[0] ? Math.max(0.18, events[0].at - 0.04) : 0.34, title: "行军推进", text: `${region.name} 的地形正在展开。` }
+  ];
+
+  events.forEach((event, index) => {
+    const eventStart = event.at;
+    const eventEnd = Math.min(0.54, eventStart + 0.08);
+    segments.push({ kind: "event", start: eventStart, end: eventEnd, title: event.name, text: event.text });
+    const nextEvent = events[index + 1];
+    const nextStart = nextEvent ? Math.max(eventEnd + 0.02, nextEvent.at - 0.04) : 0.42;
+    if (nextStart > eventEnd) {
+      segments.push({ kind: "travel", start: eventEnd, end: nextStart, title: "继续前进", text: `${dungeon.name} 的第 ${floor} 层仍有动静。` });
+    }
+  });
+
+  const battleStart = Math.max(0.42, segments[segments.length - 1].end);
+  segments.push({ kind: "battle", start: battleStart, end: 0.9, title: "遭遇战", text: `${simulation.encounter.map((enemy) => enemy.name).join("、")} 出现。` });
+  segments.push({ kind: "aftermath", start: 0.9, end: 1, title: simulation.success ? "清点战利品" : "撤退途中", text: simulation.success ? "队伍正在返回营地。" : "队伍保留经验并撤回营地。" });
+
+  return { events, segments: normalizeSegments(segments) };
+}
+
+function normalizeSegments(segments) {
+  return segments
+    .filter((segment) => segment.end > segment.start)
+    .sort((a, b) => a.start - b.start)
+    .map((segment, index, list) => ({
+      ...segment,
+      start: index === 0 ? 0 : list[index - 1].end,
+      end: index === list.length - 1 ? 1 : Math.min(segment.end, list[index + 1]?.start || segment.end)
+    }));
+}
+
+function applyExplorationRewards(simulation, events, dungeon, floor) {
+  events.forEach((event) => {
+    if (event.xpBonus) simulation.xp += floor * event.xpBonus;
+    if (event.lootChance && simulation.success && Math.random() < event.lootChance) {
+      const picked = rarity[Math.random() < 0.78 ? 0 : 1];
+      simulation.loot.push(createEquipmentItem(dungeon.lootTable[rand(0, dungeon.lootTable.length - 1)], picked, floor));
+    }
+  });
+}
+
+function createExplorationLogs(region, dungeon, floor, events, battleLogs, simulation) {
+  const opening = [
+    { text: `队伍离开营地，前往 ${region.name} / ${dungeon.name} 第 ${floor} 层。`, revealAt: 0.01 },
+    { text: "探索开始：队伍进入横版路线，自动搜索前进。", revealAt: 0.04 }
+  ];
+  const eventLogs = events.map((event) => ({
+    text: `随机事件：${event.name}。${event.text}`,
+    type: event.type === "hazard" ? "danger" : "success",
+    revealAt: Math.max(0.01, event.at || 0.2)
+  }));
+  const battleSegment = simulation.explorationSegments?.find((segment) => segment.kind === "battle") || { start: 0.42, end: 0.9 };
+  const battleSpan = Math.max(0.08, battleSegment.end - battleSegment.start);
+  const timedBattleLogs = battleLogs.map((entry, index) => ({
+    ...entry,
+    revealAt: battleSegment.start + battleSpan * ((index + 1) / Math.max(1, battleLogs.length + 1))
+  }));
+  const extraLootLogs = simulation.loot
+    .filter((item) => !battleLogs.some((entry) => entry.text.includes(item.name)))
+    .map((item, index) => ({ text: `奇遇收获：${item.rarity} ${item.name}（${slotNames[item.slot]} · ${formatStats(item.stats)}）`, type: "loot", revealAt: 0.92 + index * 0.01 }));
+  return [...opening, ...eventLogs, ...timedBattleLogs, ...extraLootLogs];
+}
+
 function startRun() {
-  if (state.activeRun || state.selectedHeroIds.length === 0) return;
+  if (getActiveRuns().length >= MAX_ACTIVE_RUNS || state.selectedHeroIds.length === 0) return;
+  if (state.selectedHeroIds.some((id) => getBusyHeroIds().has(id))) return;
   const region = getRegion();
   const dungeon = getDungeon(region);
   if (!isRegionUnlocked(region.id) || selectedFloor > getFloorCap(dungeon)) return;
-  const simulation = simulateBattle(region, dungeon, selectedFloor, state.selectedHeroIds);
+  const heroIds = [...state.selectedHeroIds];
+  const simulation = simulateBattle(region, dungeon, selectedFloor, heroIds);
+  const exploration = createExplorationPlan(region, dungeon, selectedFloor, simulation);
+  simulation.explorationSegments = exploration.segments;
+  applyExplorationRewards(simulation, exploration.events, dungeon, selectedFloor);
+  simulation.logs = createExplorationLogs(region, dungeon, selectedFloor, exploration.events, simulation.logs, simulation);
   const startedAt = Date.now();
   const durationMs = getDurationMs(selectedFloor);
 
-  state.activeRun = {
+  const run = {
     id: crypto.randomUUID ? crypto.randomUUID() : String(startedAt),
     regionId: region.id,
     regionName: region.name,
     dungeonId: dungeon.id,
     dungeonName: dungeon.name,
     floor: selectedFloor,
-    heroIds: [...state.selectedHeroIds],
+    heroIds,
     startedAt,
     endAt: startedAt + durationMs,
     durationMs,
-    simulation
+    simulation,
+    exploration
   };
+  state.activeRuns = [...getActiveRuns(), run].slice(0, MAX_ACTIVE_RUNS);
+  state.selectedHeroIds = [];
 
-  saveState("队伍已经出发");
+  saveState(`${heroIds.map((id) => classData[id]?.name || id).join(" / ")} 已经出发`);
   render();
 }
 
@@ -859,6 +1206,7 @@ function simulateBattle(region, dungeon, floor, heroIds) {
     return { side: "hero", id, name: data.name, classId: id, maxHp: stats.hp, hp: stats.hp, stats, skills, cooldown: 0 };
   });
   const enemyTeam = createEncounter(dungeon, floor);
+  const encounter = enemyTeam.map((enemy) => ({ ...enemy, stats: { ...enemy.stats } }));
   enemyTeam.forEach((enemy) => logs.push({ text: `遭遇 ${enemy.name} Lv.${enemy.level}。`, type: "danger" }));
 
   let round = 1;
@@ -887,7 +1235,16 @@ function simulateBattle(region, dungeon, floor, heroIds) {
   const loot = success ? rollLoot(dungeon, floor) : [];
   loot.forEach((item) => logs.push({ text: `发现掉落：${item.rarity} ${item.name}（${slotNames[item.slot]} · ${formatStats(item.stats)}）`, type: "loot" }));
 
-  return { success, xp, loot, logs, rounds: round - 1 };
+  return {
+    success,
+    xp,
+    loot,
+    logs,
+    rounds: round - 1,
+    encounter,
+    team: team.map((hero) => ({ id: hero.id, name: hero.name, maxHp: hero.maxHp, hp: hero.hp })),
+    enemyTeam: enemyTeam.map((enemy) => ({ id: enemy.id, monsterId: enemy.monsterId, name: enemy.name, level: enemy.level, maxHp: enemy.maxHp, hp: enemy.hp }))
+  };
 }
 
 function createEncounter(dungeon, floor) {
@@ -925,7 +1282,7 @@ function heroAction(hero, team, enemyTeam, round, logs) {
     if (hasSkill(hero, "ward_prayer")) {
       ally.guard = (ally.guard || 0) + Math.round(hero.stats.mag * 0.55);
     }
-    logs.push({ text: `${hero.name} 施放小治疗术，为 ${ally.name} 恢复 ${heal} 生命。`, type: "success" });
+    pushHealLog(logs, hero, ally, heal, `${hero.name} 施放小治疗术，为 ${ally.name} 恢复 ${heal} 生命。`);
     return;
   }
 
@@ -933,7 +1290,7 @@ function heroAction(hero, team, enemyTeam, round, logs) {
     const damage = Math.round(hero.stats.mag * 1.2 + hero.stats.atk * 0.7);
     const finalDamage = applyDamage(damage, target.stats.def * 0.7);
     target.hp -= finalDamage;
-    logs.push({ text: `${hero.name} 召出毒藤缠住 ${target.name}，造成 ${finalDamage} 伤害。` });
+    pushDamageLog(logs, hero, target, finalDamage, `${hero.name} 召出毒藤缠住 ${target.name}，造成 ${finalDamage} 伤害。`);
     finishIfDead(target, logs);
     if (hasSkill(hero, "wild_regrowth")) {
       alive(team).forEach((ally) => {
@@ -949,7 +1306,7 @@ function heroAction(hero, team, enemyTeam, round, logs) {
     alive(enemyTeam).forEach((enemy) => {
       const finalDamage = applyDamage(damage, enemy.stats.def * 0.45);
       enemy.hp -= finalDamage;
-      logs.push({ text: `${hero.name} 释放火星雨击中 ${enemy.name}，造成 ${finalDamage} 伤害。` });
+      pushDamageLog(logs, hero, enemy, finalDamage, `${hero.name} 释放火星雨击中 ${enemy.name}，造成 ${finalDamage} 伤害。`);
       finishIfDead(enemy, logs);
     });
     return;
@@ -965,13 +1322,13 @@ function heroAction(hero, team, enemyTeam, round, logs) {
   const critBonus = hasSkill(hero, "marked_prey") ? 1.95 : 1.7;
   const finalDamage = applyDamage(baseDamage * classBonus * (crit ? critBonus : 1), target.stats.def);
   target.hp -= finalDamage;
-  logs.push({ text: `${hero.name}${crit ? " 暴击" : ""} 攻击 ${target.name}，造成 ${finalDamage} 伤害。` });
+  pushDamageLog(logs, hero, target, finalDamage, `${hero.name}${crit ? " 暴击" : ""} 攻击 ${target.name}，造成 ${finalDamage} 伤害。`);
   finishIfDead(target, logs);
 
   if (hasSkill(hero, "rapid_fire") && target.hp > 0 && Math.random() < 0.22) {
     const rapidDamage = applyDamage(baseDamage * 0.58, target.stats.def);
     target.hp -= rapidDamage;
-    logs.push({ text: `${hero.name} 触发连射，追加 ${rapidDamage} 伤害。` });
+    pushDamageLog(logs, hero, target, rapidDamage, `${hero.name} 触发连射，追加 ${rapidDamage} 伤害。`);
     finishIfDead(target, logs);
   }
 }
@@ -993,15 +1350,45 @@ function monsterAction(monster, team, logs) {
     finalDamage -= absorbed;
   }
   target.hp -= finalDamage;
-  logs.push({ text: `${monster.name}${crit ? " 凶狠一击" : ""} 命中 ${target.name}，造成 ${finalDamage} 伤害。`, type: finalDamage > 30 ? "danger" : "" });
+  pushDamageLog(logs, monster, target, finalDamage, `${monster.name}${crit ? " 凶狠一击" : ""} 命中 ${target.name}，造成 ${finalDamage} 伤害。`, finalDamage > 30 ? "danger" : "");
   finishIfDead(target, logs);
 
   if (target.hp > 0 && hasSkill(target, "counter") && Math.random() < 0.28) {
     const counterDamage = applyDamage(target.stats.atk * 0.7, monster.stats.def);
     monster.hp -= counterDamage;
-    logs.push({ text: `${target.name} 反击 ${monster.name}，造成 ${counterDamage} 伤害。`, type: "success" });
+    pushDamageLog(logs, target, monster, counterDamage, `${target.name} 反击 ${monster.name}，造成 ${counterDamage} 伤害。`, "success");
     finishIfDead(monster, logs);
   }
+}
+
+function pushDamageLog(logs, actor, target, amount, text, type = "") {
+  logs.push({
+    text,
+    type,
+    meta: {
+      kind: "damage",
+      amount,
+      actor: unitRef(actor),
+      target: unitRef(target)
+    }
+  });
+}
+
+function pushHealLog(logs, actor, target, amount, text) {
+  logs.push({
+    text,
+    type: "success",
+    meta: {
+      kind: "heal",
+      amount,
+      actor: unitRef(actor),
+      target: unitRef(target)
+    }
+  });
+}
+
+function unitRef(unit) {
+  return { side: unit.side, id: unit.id, name: unit.name };
 }
 
 function applyDamage(power, defense) {
@@ -1097,8 +1484,8 @@ function formatStats(stats) {
 function spriteSheetStyle(url, index, columns, rows) {
   const col = index % columns;
   const row = Math.floor(index / columns);
-  const x = columns === 1 ? 0 : (col / (columns - 1)) * 100;
-  const y = rows === 1 ? 0 : (row / (rows - 1)) * 100;
+  const x = spriteX(col, columns);
+  const y = spriteY(row, rows);
   return `background-image:url('${url}');background-size:${columns * 100}% ${rows * 100}%;background-position:${x}% ${y}%;`;
 }
 
@@ -1157,29 +1544,40 @@ function normalizeItem(item) {
   return createEquipmentItem(baseName, picked, item?.level || 1);
 }
 
-function updateActiveRun() {
-  if (!state.activeRun) {
+function updateActiveRuns() {
+  const runs = getActiveRuns();
+  if (!runs.length) {
     els.activeRun.hidden = true;
-    els.startBtn.disabled = state.selectedHeroIds.length === 0;
+    renderMission();
     return;
   }
 
-  const run = state.activeRun;
   const now = Date.now();
-  if (now >= run.endAt) {
-    finishRun();
+  const finished = runs.filter((run) => now >= run.endAt);
+  if (finished.length) {
+    finished.forEach((run) => finishRun(run.id));
     return;
   }
 
-  const elapsed = now - run.startedAt;
-  const remaining = run.endAt - now;
-  const progress = Math.min(100, Math.round((elapsed / run.durationMs) * 100));
   els.activeRun.hidden = false;
-  els.activeRunTitle.textContent = `${run.regionName} / ${run.dungeonName} 第 ${run.floor} 层`;
-  els.timeLeft.textContent = formatTime(remaining);
-  els.runProgress.style.width = `${progress}%`;
-  els.startBtn.disabled = true;
+  els.activeRunList.innerHTML = runs.map((run, index) => {
+    const progress = Math.min(100, Math.round(((now - run.startedAt) / run.durationMs) * 100));
+    return `
+      <div class="run-summary">
+        <span>
+          <strong>小队 ${index + 1}: ${run.regionName} 第 ${run.floor} 层</strong>
+          <span class="small-line">${run.heroIds.map((id) => classData[id]?.name || id).join(" / ")}</span>
+        </span>
+        <span class="timer-box">
+          <span class="time-left">${formatTime(run.endAt - now)}</span>
+          <span class="progress-track"><span style="width:${progress}%"></span></span>
+        </span>
+      </div>
+    `;
+  }).join("");
+  renderExploration();
   renderLogs();
+  renderMission();
 }
 
 function applyProgressRewards(run) {
@@ -1229,8 +1627,8 @@ function getPendingRewards(region, completedFloor) {
   return (region.rewards || []).filter((reward) => reward.floor > completedFloor);
 }
 
-function finishRun() {
-  const run = state.activeRun;
+function finishRun(runId) {
+  const run = getActiveRuns().find((item) => item.id === runId) || getActiveRuns()[0];
   if (!run) return;
   const finishedAt = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
   const finalRun = {
@@ -1254,7 +1652,7 @@ function finishRun() {
   finalRun.equipChanges = equipChanges;
   finalRun.progressChanges = progressChanges;
   state.history = [finalRun, ...state.history].slice(0, 24);
-  state.activeRun = null;
+  state.activeRuns = getActiveRuns().filter((item) => item.id !== run.id);
   saveState("远征已结算");
   render();
 }
@@ -1271,17 +1669,27 @@ function awardXp(heroIds, xp) {
 }
 
 function getVisibleLogs() {
-  if (state.activeRun) {
-    const { simulation, startedAt, durationMs } = state.activeRun;
-    const elapsedRatio = Math.max(0.08, Math.min(1, (Date.now() - startedAt) / durationMs));
-    const visibleCount = Math.max(1, Math.ceil(simulation.logs.length * elapsedRatio));
-    return simulation.logs.slice(0, visibleCount);
+  if (hasActiveRuns()) {
+    const focusedRun = getActiveRuns()[0];
+    const { simulation, startedAt, durationMs } = focusedRun;
+    const elapsedRatio = Math.max(0, Math.min(1, (Date.now() - startedAt) / durationMs));
+    const hasTimedLogs = simulation.logs.some((entry) => typeof entry.revealAt === "number");
+    const visibleLogs = hasTimedLogs
+      ? simulation.logs.filter((entry) => typeof entry.revealAt !== "number" || entry.revealAt <= elapsedRatio)
+      : simulation.logs.slice(0, Math.max(1, Math.ceil(simulation.logs.length * Math.max(0.08, elapsedRatio))));
+    const prefix = getActiveRuns().length > 1 ? [{ text: `当前显示小队 1 日志；另有 ${getActiveRuns().length - 1} 支队伍正在探索。`, type: "loot" }] : [];
+    return [...prefix, ...visibleLogs];
   }
 
   return state.history[0]?.simulation?.logs || [];
 }
 
 function runQuickSimulation() {
+  if (!state.selectedHeroIds.length) {
+    els.combatLog.innerHTML = `<p class="log-entry danger">请先在英雄队伍中选择 1-3 名英雄，再运行快速模拟。</p>`;
+    els.resultBadge.textContent = "缺少队伍";
+    return;
+  }
   const region = getRegion();
   const dungeon = getDungeon(region);
   const total = 100;
@@ -1346,5 +1754,5 @@ els.resetBtn.addEventListener("click", () => {
 });
 
 render();
-tickTimer = setInterval(updateActiveRun, 1000);
+tickTimer = setInterval(updateActiveRuns, 1000);
 window.addEventListener("beforeunload", () => clearInterval(tickTimer));

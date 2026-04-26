@@ -64,17 +64,20 @@
           </div>
 
           <div id="activeRun" class="active-run" hidden>
-            <div>
-              <p class="eyebrow">EXPEDITION IN PROGRESS</p>
-              <strong id="activeRunTitle"></strong>
+            <div class="active-run-head">
+              <p class="eyebrow">EXPEDITION SLOTS</p>
+              <strong>正在探索的小队</strong>
             </div>
-            <div class="timer-box">
-              <span id="timeLeft">--:--</span>
-              <div class="progress-track">
-                <div id="runProgress"></div>
-              </div>
-            </div>
+            <div id="activeRunList" class="active-run-list"></div>
           </div>
+        </section>
+
+        <section class="panel explore-panel" aria-labelledby="exploreTitle">
+          <div class="panel-head">
+            <h2 id="exploreTitle">探索画面</h2>
+            <span id="activeRunCount" class="chip">0 / 2</span>
+          </div>
+          <div id="explorationStage" class="exploration-stage"></div>
         </section>
 
         <section class="panel roster-panel" aria-labelledby="rosterTitle">

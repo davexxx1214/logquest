@@ -150,6 +150,7 @@ button:disabled {
   grid-template-columns: minmax(260px, 0.82fr) minmax(420px, 1.48fr) minmax(320px, 1fr);
   grid-template-areas:
     "map mission roster"
+    "map explore roster"
     "codex log loot";
   gap: 14px;
   margin-top: 18px;
@@ -171,6 +172,10 @@ button:disabled {
 
 .mission-panel {
   grid-area: mission;
+}
+
+.explore-panel {
+  grid-area: explore;
 }
 
 .roster-panel {
@@ -280,6 +285,26 @@ h3 {
 
 .hero-tile.locked {
   opacity: 0.64;
+}
+
+.hero-tile.busy {
+  opacity: 0.78;
+  background:
+    repeating-linear-gradient(135deg, rgba(244, 184, 74, 0.11) 0 8px, transparent 8px 16px),
+    var(--panel-2);
+}
+
+.hero-tile.busy::after {
+  content: "远征中";
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  padding: 3px 6px;
+  color: #141016;
+  background: var(--gold);
+  border: 2px solid #171018;
+  font-size: 0.66rem;
+  font-weight: 900;
 }
 
 .tile-icon,
@@ -430,22 +455,43 @@ select {
 }
 
 .floor-meter div,
-.progress-track div {
+.progress-track div,
+.progress-track span {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, var(--mint), var(--gold), var(--red));
   transition: width 220ms ease-out;
 }
 
+.progress-track span {
+  display: block;
+}
+
 .active-run {
-  display: grid;
-  grid-template-columns: 1fr 220px;
-  gap: 14px;
-  align-items: center;
   margin-top: 14px;
   padding: 12px;
   background: #241b2b;
   border: 2px solid var(--gold);
+}
+
+.active-run-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.active-run-list {
+  display: grid;
+  gap: 8px;
+}
+
+.run-summary {
+  display: grid;
+  grid-template-columns: 1fr 104px;
+  gap: 10px;
+  align-items: center;
 }
 
 .timer-box {
@@ -453,9 +499,9 @@ select {
   gap: 8px;
 }
 
-#timeLeft {
+.time-left {
   color: var(--mint);
-  font-size: 1.45rem;
+  font-size: 1.08rem;
   font-weight: 900;
   text-align: right;
 }
@@ -511,6 +557,274 @@ select {
 .monster-tile {
   grid-template-columns: 70px 1fr;
   align-items: center;
+}
+
+.exploration-stage {
+  display: grid;
+  gap: 12px;
+}
+
+.explore-empty {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  color: var(--muted);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 16px 16px,
+    #18121c;
+  border: 2px solid #151015;
+  text-align: center;
+}
+
+.run-card {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  background: #201827;
+  border: 2px solid #151015;
+}
+
+.run-card-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.run-card-head strong {
+  color: var(--paper);
+}
+
+.side-scene {
+  position: relative;
+  overflow: hidden;
+  min-height: 238px;
+  border: var(--pixel) solid #151015;
+  background: #203547;
+  image-rendering: pixelated;
+}
+
+.side-scene::before,
+.side-scene::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+}
+
+.side-scene::before {
+  inset-block-start: 0;
+  height: 58%;
+  background:
+    linear-gradient(90deg, transparent 0 22px, rgba(255, 255, 255, 0.12) 22px 28px, transparent 28px) 0 0 / 96px 100%,
+    linear-gradient(180deg, var(--scene-sky-a), var(--scene-sky-b));
+}
+
+.side-scene::after {
+  inset-block-end: 0;
+  height: 42%;
+  background:
+    linear-gradient(135deg, transparent 0 34px, var(--scene-mid-a) 34px 60px, transparent 60px) 0 0 / 94px 78%,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 7px, transparent 7px 14px) 0 100% / 22px 28px,
+    linear-gradient(180deg, var(--scene-ground-a), var(--scene-ground-b));
+}
+
+.side-scene.travel::after {
+  animation: groundScroll 950ms steps(6) infinite;
+}
+
+.scene-path {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 46px;
+  z-index: 1;
+  height: 34px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 8px, transparent 8px 22px) 0 0 / 44px 100%,
+    rgba(22, 14, 17, 0.34);
+}
+
+.scene-party,
+.scene-enemies {
+  position: absolute;
+  inset-block-end: 52px;
+  z-index: 2;
+  display: flex;
+  align-items: end;
+  gap: 7px;
+}
+
+.scene-party {
+  inset-inline-start: 34px;
+}
+
+.scene-enemies {
+  inset-inline-end: 30px;
+  flex-direction: row-reverse;
+}
+
+.unit-stand {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  width: 58px;
+}
+
+.scene-unit {
+  width: 54px;
+  height: 54px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  image-rendering: pixelated;
+  filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.45));
+}
+
+.side-scene.travel .scene-party {
+  animation: partyWalk 820ms steps(2) infinite;
+}
+
+.scene-unit.hero-walk {
+  animation: heroWalkFrames 560ms steps(1, end) infinite;
+}
+
+.scene-unit.hero-battle {
+  background-position: var(--sprite-x) var(--hero-idle);
+}
+
+.side-scene.battle .scene-unit.hero-active {
+  animation: heroAttackFrames 760ms steps(1, end) infinite, attackNudge 760ms steps(2) infinite;
+}
+
+.scene-unit.monster-battle {
+  background-position: var(--sprite-x) var(--monster-idle);
+}
+
+.side-scene.battle .scene-unit.monster-active {
+  animation: monsterAttackFrames 840ms steps(1, end) infinite, monsterAttackNudge 840ms steps(2) infinite;
+}
+
+.hp-bar {
+  overflow: hidden;
+  width: 52px;
+  height: 7px;
+  background: #130d12;
+  border: 1px solid #070507;
+}
+
+.hp-bar span {
+  display: block;
+  width: var(--hp);
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold), var(--mint));
+}
+
+.scene-banner {
+  position: absolute;
+  inset-inline: 16px;
+  inset-block-start: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid #151015;
+  padding: 7px 9px;
+  font-weight: 900;
+}
+
+.event-marker {
+  position: absolute;
+  inset-block-end: 82px;
+  inset-inline-start: 50%;
+  z-index: 3;
+  max-width: min(330px, calc(100% - 34px));
+  padding: 8px 10px;
+  color: #141016;
+  background: var(--mint);
+  border: 2px solid #151015;
+  font-weight: 900;
+  transform: translateX(-50%);
+  box-shadow: 0 5px 0 #111;
+}
+
+.damage-pop {
+  position: absolute;
+  inset-block-start: 78px;
+  inset-inline-start: var(--pop-x);
+  z-index: 4;
+  color: #fff3cb;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 900;
+  text-shadow: 2px 2px 0 #000;
+  animation: damageRise 900ms ease-out infinite;
+  animation-delay: var(--pop-delay, 0ms);
+}
+
+.damage-pop.heal {
+  color: #90e7a7;
+}
+
+.run-foot {
+  display: grid;
+  gap: 7px;
+}
+
+.phase-track {
+  overflow: hidden;
+  height: 12px;
+  background: #151015;
+  border: 2px solid #0b090d;
+}
+
+.phase-track span {
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  background: linear-gradient(90deg, var(--mint), var(--gold), var(--red));
+}
+
+@keyframes groundScroll {
+  from { background-position: 0 0, 0 100%, 0 0; }
+  to { background-position: -94px 0, -22px 100%, 0 0; }
+}
+
+@keyframes partyWalk {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes attackNudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
+@keyframes heroWalkFrames {
+  0%, 49% { background-position: var(--sprite-x) var(--hero-walk-a); }
+  50%, 100% { background-position: var(--sprite-x) var(--hero-walk-b); }
+}
+
+@keyframes heroAttackFrames {
+  0%, 54% { background-position: var(--sprite-x) var(--hero-idle); }
+  55%, 100% { background-position: var(--sprite-x) var(--hero-attack); }
+}
+
+@keyframes monsterAttackFrames {
+  0%, 54% { background-position: var(--sprite-x) var(--monster-idle); }
+  55%, 100% { background-position: var(--sprite-x) var(--monster-attack); }
+}
+
+@keyframes monsterAttackNudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-5px); }
+}
+
+@keyframes damageRise {
+  0% { opacity: 0; transform: translateY(10px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-22px); }
 }
 
 .combat-log {
@@ -611,6 +925,7 @@ select {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "mission mission"
+      "explore explore"
       "map roster"
       "codex log"
       "loot loot";
@@ -624,8 +939,7 @@ select {
   }
 
   .topbar,
-  .mission-layout,
-  .active-run {
+  .mission-layout {
     grid-template-columns: 1fr;
   }
 
@@ -649,6 +963,7 @@ select {
     grid-template-columns: 1fr;
     grid-template-areas:
       "mission"
+      "explore"
       "roster"
       "map"
       "log"
@@ -660,7 +975,40 @@ select {
     height: 300px;
   }
 
-  #timeLeft {
+  .run-summary,
+  .run-card-head,
+  .active-run-head {
+    grid-template-columns: 1fr;
+  }
+
+  .time-left {
     text-align: left;
+  }
+
+  .side-scene {
+    min-height: 218px;
+  }
+
+  .scene-party {
+    inset-inline-start: 18px;
+    gap: 2px;
+  }
+
+  .scene-enemies {
+    inset-inline-end: 14px;
+    gap: 1px;
+  }
+
+  .unit-stand {
+    width: 44px;
+  }
+
+  .scene-unit {
+    width: 42px;
+    height: 42px;
+  }
+
+  .hp-bar {
+    width: 42px;
   }
 }
