@@ -1,0 +1,16 @@
+Create one 2D game character animation sprite sheet using assets/heroes-16bit-v2-source.png as the visual reference.
+
+Preserve the six hero identities, silhouettes, palettes, face/eye style, costumes, weapons, accessories, and 16-bit fantasy pixel-art material language:
+column 1 red warrior with sword and cape, column 2 purple mage with hat and orb staff, column 3 gold-and-white monk cleric with holy staff, column 4 green hooded hunter with bow and quiver, column 5 blue-silver armored knight with shield and sword, column 6 green druid with leaf cloak, antler crown, and wooden staff.
+
+Sheet shape: exactly 6 columns by 4 rows, 24 equal cells, one hero per column and one animation frame per row. All characters are side-view / slight 3/4 side-view, facing right, full body visible.
+
+Rows:
+row 1: normal walk frame A, grounded stride with front foot forward.
+row 2: normal walk frame B, alternate grounded stride with back foot forward.
+row 3: battle idle / ready stance, stronger posture than walking, weapon or focus held ready.
+row 4: combat attack frame, class-specific action: warrior sword slash, mage arcane bolt release, monk holy staff strike or light burst, hunter arrow shot, knight shielded sword slash, druid vine or leaf magic cast.
+
+Redesign the motion poses so they are clearer and more dynamic than the reference while keeping each hero recognizable. Same character scale across all frames, same bounding box in every cell. The entire character, weapon, cape, staff, bow, shield, spell effect, slash trail, projectile, leaves, sparkles, and any detached effect must fit fully inside its cell; no body part or effect may cross a cell edge. Leave visible magenta margin around every frame.
+
+Background must be 100% solid flat #FF00FF magenta across the entire sheet, no gradients, no borders between cells, no shadows on the background, no text, no labels, no UI.

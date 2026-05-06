@@ -48,7 +48,7 @@ public partial class Main : Control
         _selectedDungeonId = selectedRegion.Dungeons.First().Id;
         _selectedFloor = Math.Max(1, Math.Min(1, FloorCap(Dungeon())));
 
-        _heroSheet = LoadPng("res://Assets/heroes-16bit-v2.png");
+        _heroSheet = LoadPng("res://Assets/heroes-16bit-v3.png");
         _monsterSheet = LoadPng("res://Assets/monsters-16bit-v2.png");
         _itemSheet = LoadPng("res://Assets/items-16bit.png");
 

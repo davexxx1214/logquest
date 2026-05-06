@@ -15,6 +15,14 @@ Generated with GPT Image 2 for the current LogQuest prototype. Each final PNG ha
   - Columns: warrior, mage, monk, hunter, knight, druid
   - Rows: walk 1, walk 2, battle idle, attack
   - All hero frames face right for left-to-right side scrolling.
+  - Previous UI sheet, retained as an older reference.
+
+- `heroes-16bit-v3.png`
+  - Layout: 6 columns x 4 rows
+  - Columns: warrior, mage, monk, hunter, knight, druid
+  - Rows: walk 1, walk 2, battle idle, attack
+  - Redesign pass for clearer normal walking and class-specific combat poses.
+  - All hero frames face right for left-to-right side scrolling.
   - Current UI uses this sheet for portraits and exploration animation.
 
 - `monsters-16bit.png`
